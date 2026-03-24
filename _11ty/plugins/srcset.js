@@ -69,13 +69,14 @@ async function resize(
       ? sizedName(filename, width, hash, format).split(pathPrefix)[1]
       : sizedName(filename, width, hash, format);
 
+  if (out.includes('..')) throw new Error('Invalid output path');
   if (existsSync(join(buildDir, out))) {
     return out;
   }
 
   const normalizedFileName =
     pathPrefix.length > 1 ? filename.split(pathPrefix)[1] : filename;
-
+  if (normalizedFileName.includes('..')) throw new Error('Invalid file path');
   const file = join(assetsDir, normalizedFileName);
 
   const resizeWidth = metadataWidth < width ? metadataWidth : width;
@@ -128,6 +129,9 @@ const processImage = async (el, pathPrefix) => {
     return;
   }
 
+  if (filename.includes('..')) {
+    throw new Error('Invalid file path');
+  }
   const file = join(assetsDir, filename);
 
   // Generate file hash
@@ -159,7 +163,7 @@ const processImage = async (el, pathPrefix) => {
   picture.appendChild(el);
 
   copyFileSync(
-    join(assetsDir, filename),
+    file,
     join(buildDir, hashedName(filename, hash)),
   );
 };

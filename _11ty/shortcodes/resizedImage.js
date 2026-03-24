@@ -8,6 +8,7 @@ const OUTPUT_PATH = path.join('_site', IMAGES_DIRECTORY);
 const IMAGE_PREFIX = 'share_';
 
 const body = (src, width, height) => {
+  if (src.includes('..')) throw new Error('Invalid file path');
   const imagePath = path.join(ASSETS_DIRECTORY, src);
   const imageName = IMAGE_PREFIX + path.parse(src).base;
   const outPath = path.join(OUTPUT_PATH, imageName);
