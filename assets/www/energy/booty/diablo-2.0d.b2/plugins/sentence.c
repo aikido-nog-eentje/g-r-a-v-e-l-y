@@ -274,6 +274,8 @@ void main(int argc, char *argv[])
 {
 	int x,y,z,a,plural,numoftimes, cnt;
 	struct timeb tb;
+	char *endptr;
+	long val;
 
 	(void)ftime(&tb);	
 	srand(time(NULL)+(tb.millitm*3600));
@@ -287,7 +289,16 @@ void main(int argc, char *argv[])
 			find_possibilities();
 			return;
 		}
-		numoftimes = atoi(argv[1]);
+		errno = 0;
+		val = strtol(argv[1], &endptr, 10);
+		if (errno != 0 || endptr == argv[1] || *endptr != '\0' || val < INT_MIN || val > INT_MAX)
+		{
+			numoftimes = 1;
+		}
+		else
+		{
+			numoftimes = (int)val;
+		}
 	}
 	else
 		numoftimes = 1;
